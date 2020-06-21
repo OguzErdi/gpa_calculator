@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gpa_calculator/model/my_class.dart';
+import 'class_list.dart';
 
-import 'app/class_list.dart';
-import 'model/my_class.dart';
-
-class HomePage extends StatefulWidget {
+class GPAHomePage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _GPAHomePageState createState() => _GPAHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _GPAHomePageState extends State<GPAHomePage> {
   List<int> creditList;
   Map<String, double> scoreList;
   double borderWidth = 1;
@@ -30,6 +29,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     creditList = List.generate(10, (index) => index + 1);
+    
     scoreList = {
       "AA": 4.0,
       "BA": 3.5,
@@ -72,32 +72,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: <Widget>[
           _buildClassForm(context),
-          Container(
-            alignment: Alignment.centerLeft,
-            color: Theme.of(context).backgroundColor,
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Ders Listesi",
-                      style: Theme.of(context).textTheme.bodyText1),
-                  RichText(
-                    text: TextSpan(
-                      text: "Ortalama ",
-                      style: Theme.of(context).textTheme.bodyText1,
-                      children: [
-                        TextSpan(
-                          text: gpa.toStringAsPrecision(3),
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          GPAHeader(gpa: gpa),
           ClassList(_classList, _refreshGPA),
         ],
       ),
@@ -280,4 +255,43 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+}
+
+class GPAHeader extends StatelessWidget {
+  const GPAHeader({
+    Key key,
+    @required this.gpa,
+  }) : super(key: key);
+
+  final double gpa;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      color: Theme.of(context).backgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text("Ders Listesi",
+                style: Theme.of(context).textTheme.bodyText1),
+            RichText(
+              text: TextSpan(
+                text: "Ortalama ",
+                style: Theme.of(context).textTheme.bodyText1,
+                children: [
+                  TextSpan(
+                    text: gpa.toStringAsPrecision(3),
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
