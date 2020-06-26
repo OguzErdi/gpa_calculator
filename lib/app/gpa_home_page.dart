@@ -29,7 +29,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
     super.initState();
 
     creditList = List.generate(10, (index) => index + 1);
-    
+
     scoreList = {
       "AA": 4.0,
       "BA": 3.5,
@@ -49,44 +49,106 @@ class _GPAHomePageState extends State<GPAHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "GPA Calculator",
-            style: Theme.of(context).textTheme.headline6,
+    return OrientationBuilder(builder: (context, orientation) {
+      if (orientation == Orientation.portrait) {
+        return Scaffold(
+          resizeToAvoidBottomPadding: false,
+          appBar: AppBar(
+            title: Center(
+              child: Text(
+                "GPA Calculator",
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
           ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.plus_one,
-          size: 48,
-          color: Theme.of(context).scaffoldBackgroundColor,
-        ),
-        elevation: 1.0,
-        onPressed: _addToLessonList,
-      ),
-      body: Column(
+          floatingActionButton: FloatingActionButton(
+            child: Icon(
+              Icons.plus_one,
+              size: 48,
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+            elevation: 1.0,
+            onPressed: _addToLessonList,
+          ),
+          body: _bodyPortraitMode(context, gpa, _classList),
+        );
+      }
+      else{
+        return Scaffold(
+          resizeToAvoidBottomPadding: false,
+          appBar: AppBar(
+            title: Center(
+              child: Text(
+                "GPA Calculator",
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(
+              Icons.plus_one,
+              size: 48,
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+            elevation: 1.0,
+            onPressed: _addToLessonList,
+          ),
+          // body: _bodyPortraitMode(context, gpa, _classList),
+          body: _bodyLandscapeMode(context, gpa, _classList),
+        );
+      }
+    });
+  }
+
+  Widget _bodyPortraitMode(
+      BuildContext context, double gpa, List<MyClass> _classList) {
+    return Container(
+      child: Column(
         children: <Widget>[
           _buildClassForm(context),
           GPAHeader(gpa: gpa),
-          ClassList(_classList, _refreshGPA),
+          ClassList(UniqueKey(), _classList, _refreshGPA),
         ],
       ),
     );
   }
 
-  Form _buildClassForm(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
+  Widget _bodyLandscapeMode(
+      BuildContext context, double gpa, List<MyClass> _classList) {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalWidth),
-            child: TextFormField(
+          Expanded(
+            child: _buildClassForm(context),
+            flex: 1,
+          ),
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                GPAHeader(gpa: gpa),
+                ClassList(UniqueKey(), _classList, _refreshGPA),
+              ],
+            ),
+            flex: 1,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildClassForm(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: horizontalWidth),
+      child: Form(
+        key: formKey,
+        child: Column(
+          children: <Widget>[
+            TextFormField(
               decoration: InputDecoration(
                 labelText: "Ders Adı",
                 labelStyle: Theme.of(context).textTheme.bodyText2,
@@ -98,11 +160,8 @@ class _GPAHomePageState extends State<GPAHomePage> {
               validator: isStringEmptyValidator,
               onSaved: _selectedClassName,
             ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalWidth),
-            child: Row(
+            SizedBox(height: 20),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(
@@ -154,9 +213,9 @@ class _GPAHomePageState extends State<GPAHomePage> {
                 ),
               ],
             ),
-          ),
-          SizedBox(height: 40),
-        ],
+            SizedBox(height: 30),
+          ],
+        ),
       ),
     );
   }
@@ -237,6 +296,10 @@ class _GPAHomePageState extends State<GPAHomePage> {
     double totalScore = 0;
     double totalCredit = 0;
 
+    if (_classList.length == 0) {
+      return 0.0;
+    }
+
     for (var _class in _classList) {
       totalScore += _class.score * _class.credit;
       totalCredit += _class.credit;
@@ -249,12 +312,11 @@ class _GPAHomePageState extends State<GPAHomePage> {
     return gpa;
   }
 
-  _refreshGPA(){
+  _refreshGPA() {
     setState(() {
       _calculateGPA();
     });
   }
-
 }
 
 class GPAHeader extends StatelessWidget {
@@ -275,8 +337,7 @@ class GPAHeader extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("Ders Listesi",
-                style: Theme.of(context).textTheme.bodyText1),
+            Text("Ders Listesi", style: Theme.of(context).textTheme.bodyText1),
             RichText(
               text: TextSpan(
                 text: "Ortalama ",

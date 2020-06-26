@@ -5,7 +5,11 @@ class ClassList extends StatefulWidget {
   List<MyClass> _classList;
   var _refreshGPA;
 
-  ClassList(this._classList, this._refreshGPA);
+  ClassList(
+    Key key,
+    this._classList,
+    this._refreshGPA,
+  ) : super(key: key);
 
   @override
   _ClassListState createState() => _ClassListState();
@@ -46,6 +50,7 @@ class _ClassListState extends State<ClassList> {
 
   Widget _buildDissForeGround(MyClass item, int index, BuildContext context) {
     return Container(
+      key: UniqueKey(),
       child: Dismissible(
         //rounded olduğu için, animasyonda köşeler sivri kalıyor. Bu yüzden stack kallanıldı.
         // background: Container(
@@ -56,13 +61,17 @@ class _ClassListState extends State<ClassList> {
         onDismissed: (direction) {
           // Remove the item from the data source.
           setState(() {
+            debugPrint("silindi.");
             widget._classList.removeAt(index);
             widget._refreshGPA();
           });
 
           // Show a snackbar. This snackbar could also contain "Undo" actions.
           Scaffold.of(context).showSnackBar(
-              SnackBar(content: Text("${item.name} Dersi silindi.")));
+            SnackBar(
+              content: Text("${item.name} Dersi silindi."),
+            ),
+          );
         },
         child: Container(
           decoration: BoxDecoration(
