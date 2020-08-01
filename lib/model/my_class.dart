@@ -1,8 +1,8 @@
 class MyClass {
   String name = "";
   int credit = 3;
-  double score = 3.0;
-  String scoreStr = "AA";
+  double score;
+  String scoreStr;
 
   MyClass();
 

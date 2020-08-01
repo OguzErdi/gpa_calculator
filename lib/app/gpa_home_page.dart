@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gpa_calculator/bussiness/grade_types/aa_grade_type_list.dart';
+import 'package:gpa_calculator/bussiness/grade_types/ap_grade_type_list.dart';
+import 'package:gpa_calculator/bussiness/grade_types/grade_type_list.dart';
 import 'package:gpa_calculator/model/my_class.dart';
 import 'class_list.dart';
+import 'gpa_drawer.dart';
 
 class GPAHomePage extends StatefulWidget {
   @override
@@ -9,8 +13,8 @@ class GPAHomePage extends StatefulWidget {
 }
 
 class _GPAHomePageState extends State<GPAHomePage> {
-  List<int> creditList;
-  Map<String, double> scoreList;
+  List<int> _creditList;
+  GradeTypeList _gradeList;
   double borderWidth = 1;
   double borderRadius = 10;
   double horizontalWidth = 20;
@@ -28,23 +32,14 @@ class _GPAHomePageState extends State<GPAHomePage> {
   void initState() {
     super.initState();
 
-    creditList = List.generate(10, (index) => index + 1);
+    _creditList = List.generate(10, (index) => index + 1);
 
-    scoreList = {
-      "AA": 4.0,
-      "BA": 3.5,
-      "BB": 3.0,
-      "CB": 2.5,
-      "CC": 2.0,
-      "CD": 1.5,
-      "DD": 1.0,
-      "FF": 0.0,
-    };
+    _gradeList = APlusGradeType();
 
     _classList = List<MyClass>();
     _newClass = MyClass();
     selectedCredit = _newClass.credit;
-    selectedScoreStr = _newClass.scoreStr;
+    selectedScoreStr = _gradeList.list.keys.toList()[3];
   }
 
   @override
@@ -53,12 +48,13 @@ class _GPAHomePageState extends State<GPAHomePage> {
       if (orientation == Orientation.portrait) {
         return Scaffold(
           resizeToAvoidBottomPadding: false,
+          drawer: GpaDrawer(UniqueKey()),
           appBar: AppBar(
-            title: Center(
-              child: Text(
-                "GPA Calculator",
-                style: Theme.of(context).textTheme.headline6,
-              ),
+            iconTheme: new IconThemeData(color: Colors.white),
+            centerTitle: true,
+            title: Text(
+              "GPA Calculator",
+              style: Theme.of(context).textTheme.headline6,
             ),
             backgroundColor: Colors.transparent,
             elevation: 0.0,
@@ -78,12 +74,13 @@ class _GPAHomePageState extends State<GPAHomePage> {
       else{
         return Scaffold(
           resizeToAvoidBottomPadding: false,
+          drawer: GpaDrawer(UniqueKey()),
           appBar: AppBar(
-            title: Center(
-              child: Text(
-                "GPA Calculator",
-                style: Theme.of(context).textTheme.headline6,
-              ),
+            iconTheme: new IconThemeData(color: Colors.white),
+            centerTitle: true,
+            title: Text(
+              "GPA Calculator",
+              style: Theme.of(context).textTheme.headline6,
             ),
             backgroundColor: Colors.transparent,
             elevation: 0.0,
@@ -97,7 +94,6 @@ class _GPAHomePageState extends State<GPAHomePage> {
             elevation: 1.0,
             onPressed: _addToLessonList,
           ),
-          // body: _bodyPortraitMode(context, gpa, _classList),
           body: _bodyLandscapeMode(context, gpa, _classList),
         );
       }
@@ -177,7 +173,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<int>(
-                        items: creditList
+                        items: _creditList
                             .map((item) => DropdownMenuItem(
                                 child: Text("$item kredi"), value: item))
                             .toList(),
@@ -243,7 +239,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
     setState(() {
       selectedScoreStr = value;
       _newClass.scoreStr = value;
-      _newClass.score = scoreList[value];
+      _newClass.score = _gradeList.list[value];
     });
   }
 
@@ -269,7 +265,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
   _getScoreList() {
     List<DropdownMenuItem<String>> menuItems = List();
 
-    for (var item in scoreList.keys) {
+    for (var item in _gradeList.list.keys) {
       DropdownMenuItem<String> drpItem =
           new DropdownMenuItem(child: Text(item), value: item);
       menuItems.add(drpItem);
