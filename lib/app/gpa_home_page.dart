@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gpa_calculator/bussiness/grade_types/aa_grade_type_list.dart';
 import 'package:gpa_calculator/bussiness/grade_types/ap_grade_type_list.dart';
 import 'package:gpa_calculator/bussiness/grade_types/grade_type_list.dart';
 import 'package:gpa_calculator/model/my_class.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'class_list.dart';
 import 'gpa_drawer.dart';
 
@@ -28,6 +31,8 @@ class _GPAHomePageState extends State<GPAHomePage> {
 
   final formKey = GlobalKey<FormState>();
 
+  static const String keyClassList = 'ClassList';
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +41,8 @@ class _GPAHomePageState extends State<GPAHomePage> {
 
     _gradeList = APlusGradeType();
 
-    _classList = List<MyClass>();
+    // _classList = List<MyClass>();
+    _getClassList();
     _newClass = MyClass();
     selectedCredit = _newClass.credit;
     selectedScoreStr = _gradeList.list.keys.toList()[3];
@@ -66,7 +72,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
               color: Theme.of(context).scaffoldBackgroundColor,
             ),
             elevation: 1.0,
-            onPressed: _addToLessonList,
+            onPressed: _addToClassList,
           ),
           body: _bodyPortraitMode(context, gpa, _classList),
         );
@@ -92,7 +98,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
               color: Theme.of(context).scaffoldBackgroundColor,
             ),
             elevation: 1.0,
-            onPressed: _addToLessonList,
+            onPressed: _addToClassList,
           ),
           body: _bodyLandscapeMode(context, gpa, _classList),
         );
@@ -243,7 +249,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
     });
   }
 
-  void _addToLessonList() {
+  void _addToClassList() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
 
@@ -257,6 +263,8 @@ class _GPAHomePageState extends State<GPAHomePage> {
           scoreStr: _newClass.scoreStr,
         ));
       });
+
+      _saveClassList();
 
       _calculateGPA();
     }
@@ -272,6 +280,18 @@ class _GPAHomePageState extends State<GPAHomePage> {
     }
 
     return menuItems;
+  }
+
+  _saveClassList() async {
+    var encodedClassList = json.encode(_classList);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(keyClassList, encodedClassList);
+  }
+
+  _getClassList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var encodedClassList = prefs.getString(keyClassList);
+    _classList = json.decode(encodedClassList);
   }
 
   String isStringEmptyValidator(String value) {

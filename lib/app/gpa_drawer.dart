@@ -131,6 +131,11 @@ class _GpaDrawerState extends State<GpaDrawer> {
   }
 
   _changeGradeTypeHandler(value) {
+    //dont change if same value selected
+    if(value == widget._selectedGradeType){
+      return;
+    }
+    
     _changeGradeTypeValue(value);
     _showWarningDialogChangeGradeType(
       context,
@@ -138,7 +143,7 @@ class _GpaDrawerState extends State<GpaDrawer> {
     );
   }
 
-  _storeGradeType(value) async {
+  _saveGradeType(value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(GpaDrawer.keySelectedGradeType, value);
   }
@@ -162,6 +167,7 @@ class _GpaDrawerState extends State<GpaDrawer> {
         barrierDismissible: true,
         builder: (context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(widget._borderRadius))),
             title: Text("Uyarı"),
             content: Text(
               "Not tipini değiştirmeniz tüm ders listesini silecektir. Devam etmek istiyor musunuz?",
@@ -177,9 +183,15 @@ class _GpaDrawerState extends State<GpaDrawer> {
                 child: ButtonBar(
                   children: <Widget>[
                     FlatButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: 
+                            BorderRadius.circular(widget._borderRadius),
+                        side: BorderSide(color: Colors.red),
+                      ),
+                      color: Colors.red,
                       child: Text("Evet"),
                       onPressed: () {
-                        _storeGradeType(value);
+                        _saveGradeType(value);
                         Navigator.of(context).pop();
                       },
                     ),
@@ -187,7 +199,7 @@ class _GpaDrawerState extends State<GpaDrawer> {
                       child: Text("Hayır"),
                       onPressed: () {
                         _returnOldGradeTypeValue();
-                        //dialogu kapatma
+                        //dialogu kapat
                         Navigator.of(context).pop();
                       },
                     ),
@@ -205,6 +217,7 @@ class _GpaDrawerState extends State<GpaDrawer> {
         barrierDismissible: true,
         builder: (context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(widget._borderRadius))),
             title: Text("Uyarı"),
             content: Text(
               "Tüm ders listesini silecektir. Devam etmek istiyor musunuz?",
@@ -235,7 +248,7 @@ class _GpaDrawerState extends State<GpaDrawer> {
                     FlatButton(
                       child: Text("Hayır"),
                       onPressed: () {
-                        //dialogu kapatma
+                        //dialogu kapat
                         Navigator.of(context).pop();
                       },
                     ),
