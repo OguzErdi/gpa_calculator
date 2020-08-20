@@ -22,8 +22,9 @@ class _GPAHomePageState extends State<GPAHomePage> {
   double borderRadius = 10;
   double horizontalWidth = 20;
 
-  int selectedCredit;
-  String selectedScoreStr;
+  int _selectedCredit;
+  String _selectedScoreStr;
+  double _selectedScore;
 
   MyClass _newClass;
   List<MyClass> _classList;
@@ -37,15 +38,19 @@ class _GPAHomePageState extends State<GPAHomePage> {
   void initState() {
     super.initState();
 
+    _gradeList = APlusGradeType();
+    _selectedScoreStr = _gradeList.list.keys.toList()[3];
+    _selectedScore = _gradeList.list.values.toList()[3];
+    _selectedCredit = 3;
     _creditList = List.generate(10, (index) => index + 1);
 
-    _gradeList = APlusGradeType();
-
-    // _classList = List<MyClass>();
     _getClassList();
-    _newClass = MyClass();
-    selectedCredit = _newClass.credit;
-    selectedScoreStr = _gradeList.list.keys.toList()[3];
+    //_calculateGPA();
+    _newClass = MyClass.special(
+      credit: _selectedCredit,
+      scoreStr: _selectedScoreStr,
+      score: _selectedScore,
+    );
   }
 
   @override
@@ -76,8 +81,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
           ),
           body: _bodyPortraitMode(context, gpa, _classList),
         );
-      }
-      else{
+      } else {
         return Scaffold(
           resizeToAvoidBottomPadding: false,
           drawer: GpaDrawer(UniqueKey()),
@@ -113,7 +117,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
         children: <Widget>[
           _buildClassForm(context),
           GPAHeader(gpa: gpa),
-          ClassList(UniqueKey(), _classList, _refreshGPA),
+          ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList),
         ],
       ),
     );
@@ -133,7 +137,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
             child: Column(
               children: <Widget>[
                 GPAHeader(gpa: gpa),
-                ClassList(UniqueKey(), _classList, _refreshGPA),
+                ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList),
               ],
             ),
             flex: 1,
@@ -186,7 +190,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
                         onChanged: _selectCredit,
                         dropdownColor:
                             Theme.of(context).scaffoldBackgroundColor,
-                        value: selectedCredit,
+                        value: _selectedCredit,
                       ),
                     ),
                   ),
@@ -208,7 +212,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
                         onChanged: _selectScore,
                         dropdownColor:
                             Theme.of(context).scaffoldBackgroundColor,
-                        value: selectedScoreStr,
+                        value: _selectedScoreStr,
                       ),
                     ),
                   ),
@@ -236,14 +240,14 @@ class _GPAHomePageState extends State<GPAHomePage> {
 
   void _selectCredit(value) {
     setState(() {
-      selectedCredit = value;
+      _selectedCredit = value;
       _newClass.credit = value;
     });
   }
 
   void _selectScore(value) {
     setState(() {
-      selectedScoreStr = value;
+      _selectedScoreStr = value;
       _newClass.scoreStr = value;
       _newClass.score = _gradeList.list[value];
     });
@@ -291,7 +295,21 @@ class _GPAHomePageState extends State<GPAHomePage> {
   _getClassList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var encodedClassList = prefs.getString(keyClassList);
-    _classList = json.decode(encodedClassList);
+
+    setState(() {
+      _decodeClassList(encodedClassList);
+      _calculateGPA();
+    });
+  }
+
+  void _decodeClassList(String encodedClassList) {
+    if (encodedClassList != null) {
+      var decodedList = json.decode(encodedClassList);
+      _classList =
+          List<MyClass>.from(decodedList.map((i) => MyClass.fromJson(i)));
+    } else {
+      _classList = List<MyClass>();
+    }
   }
 
   String isStringEmptyValidator(String value) {

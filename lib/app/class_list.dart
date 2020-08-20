@@ -4,11 +4,13 @@ import 'package:gpa_calculator/model/my_class.dart';
 class ClassList extends StatefulWidget {
   List<MyClass> _classList;
   var _refreshGPA;
+  var _saveClassList;
 
   ClassList(
     Key key,
     this._classList,
     this._refreshGPA,
+    this._saveClassList,
   ) : super(key: key);
 
   @override
@@ -63,6 +65,7 @@ class _ClassListState extends State<ClassList> {
           setState(() {
             debugPrint("silindi.");
             widget._classList.removeAt(index);
+            widget._saveClassList();
             widget._refreshGPA();
           });
 
