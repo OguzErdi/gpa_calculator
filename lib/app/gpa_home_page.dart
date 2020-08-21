@@ -60,7 +60,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
         return Scaffold(
           resizeToAvoidBottomPadding: false,
           drawer: SafeArea(
-            child: GpaDrawer(UniqueKey()),
+            child: GpaDrawer(UniqueKey(), _removeClassList),
           ),
           appBar: AppBar(
             iconTheme: new IconThemeData(color: Colors.white),
@@ -86,7 +86,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
       } else {
         return Scaffold(
           resizeToAvoidBottomPadding: false,
-          drawer: GpaDrawer(UniqueKey()),
+          drawer: GpaDrawer(UniqueKey(), _removeClassList),
           appBar: AppBar(
             iconTheme: new IconThemeData(color: Colors.white),
             centerTitle: true,
@@ -304,6 +304,16 @@ class _GPAHomePageState extends State<GPAHomePage> {
     });
   }
 
+  _removeClassList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(keyClassList);
+
+    setState(() {
+      _classList = List<MyClass>();
+      _calculateGPA();
+    });
+  }
+
   void _decodeClassList(String encodedClassList) {
     if (encodedClassList != null) {
       var decodedList = json.decode(encodedClassList);
@@ -328,24 +338,20 @@ class _GPAHomePageState extends State<GPAHomePage> {
     );
   }
 
-  double _calculateGPA() {
+  _calculateGPA() {
     double totalScore = 0;
     double totalCredit = 0;
 
     if (_classList.length == 0) {
-      return 0.0;
+      gpa = 0.0;
+      return;
     }
 
     for (var _class in _classList) {
       totalScore += _class.score * _class.credit;
       totalCredit += _class.credit;
     }
-
     gpa = totalScore / totalCredit;
-
-    debugPrint("$totalScore - $totalCredit");
-
-    return gpa;
   }
 
   _refreshGPA() {
@@ -353,6 +359,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
       _calculateGPA();
     });
   }
+
 }
 
 class GPAHeader extends StatelessWidget {

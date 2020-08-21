@@ -8,9 +8,11 @@ class GpaDrawer extends StatefulWidget {
   String _oldGradeType;
   double _borderRadius = 10;
   static const String keySelectedGradeType = 'SelectedGradeType';
+  var _removeClassList;
 
   GpaDrawer(
     Key key,
+    this._removeClassList,
   ) : super(key: key) {
     _gradeListType = ["A+", "AA"];
   }
@@ -237,7 +239,7 @@ class _GpaDrawerState extends State<GpaDrawer> {
                       color: Colors.red,
                       child: Text("Evet"),
                       onPressed: () {
-                        _removeAllClassList();
+                        widget._removeClassList();
                         Navigator.of(context).pop();
                       },
                     ),
@@ -256,5 +258,4 @@ class _GpaDrawerState extends State<GpaDrawer> {
         });
   }
 
-  void _removeAllClassList() {}
 }

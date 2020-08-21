@@ -54,7 +54,7 @@ class _ClassListState extends State<ClassList> {
     return Container(
       key: UniqueKey(),
       child: Dismissible(
-        //rounded olduğu için, animasyonda köşeler sivri kalıyor. Bu yüzden stack kallanıldı.
+        //rounded olduğu için, animasyonda köşeler sivri kalıyor. Bu yüzden stack kullanıldı.
         // background: Container(
         //   decoration: BoxDecoration(
         //       borderRadius: BorderRadius.circular(10), color: Colors.red),
@@ -107,9 +107,15 @@ class DissBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: Container(
-        alignment: Alignment.center,
+        alignment: Alignment.centerRight,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: Colors.red),
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.red,
+        ),
+        child: Container(
+          width: 80,
+          child: Icon(Icons.delete),
+        ),
       ),
     );
   }
