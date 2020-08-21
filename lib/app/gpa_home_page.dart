@@ -31,6 +31,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
   double gpa = 0;
 
   final formKey = GlobalKey<FormState>();
+  TextEditingController _controller = new TextEditingController();
 
   static const String keyClassList = 'ClassList';
 
@@ -171,6 +172,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
               ),
               validator: isStringEmptyValidator,
               onSaved: _selectedClassName,
+              controller: _controller,
             ),
             SizedBox(height: 20),
             Row(
@@ -275,8 +277,9 @@ class _GPAHomePageState extends State<GPAHomePage> {
       });
 
       _saveClassList();
-
       _calculateGPA();
+
+      _controller.clear();
     }
   }
 
