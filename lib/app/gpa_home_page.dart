@@ -39,10 +39,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
     super.initState();
 
     _gradeList = APlusGradeType();
-    _selectedScoreStr = _gradeList.list.keys.toList()[3];
-    _selectedScore = _gradeList.list.values.toList()[3];
-    _selectedCredit = 3;
-    _creditList = List.generate(10, (index) => index + 1);
+    _getDefaultSelectedValues();
 
     _getClassList();
     //_calculateGPA();
@@ -53,6 +50,13 @@ class _GPAHomePageState extends State<GPAHomePage> {
     );
   }
 
+  void _getDefaultSelectedValues() {
+    _selectedScoreStr = _gradeList.list.keys.toList()[3];
+    _selectedScore = _gradeList.list.values.toList()[3];
+    _selectedCredit = 3;
+    _creditList = List.generate(10, (index) => index + 1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return OrientationBuilder(builder: (context, orientation) {
@@ -60,7 +64,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
         return Scaffold(
           resizeToAvoidBottomPadding: false,
           drawer: SafeArea(
-            child: GpaDrawer(UniqueKey(), _removeClassList),
+            child: GpaDrawer(UniqueKey(), _removeClassList, _changeGradeType),
           ),
           appBar: AppBar(
             iconTheme: new IconThemeData(color: Colors.white),
@@ -86,7 +90,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
       } else {
         return Scaffold(
           resizeToAvoidBottomPadding: false,
-          drawer: GpaDrawer(UniqueKey(), _removeClassList),
+          drawer: GpaDrawer(UniqueKey(), _removeClassList, _changeGradeType),
           appBar: AppBar(
             iconTheme: new IconThemeData(color: Colors.white),
             centerTitle: true,
@@ -358,6 +362,21 @@ class _GPAHomePageState extends State<GPAHomePage> {
     setState(() {
       _calculateGPA();
     });
+  }
+
+  _changeGradeType() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var gradeTypeStr = prefs.getString(GpaDrawer.keySelectedGradeType);
+
+    if(gradeTypeStr == "A+"){
+      _gradeList = APlusGradeType();
+    }
+    else{
+      _gradeList = AAGradeType();
+    }
+
+    _removeClassList();
+    _getDefaultSelectedValues();
   }
 
 }
