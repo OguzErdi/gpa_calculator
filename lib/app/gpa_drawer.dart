@@ -33,10 +33,6 @@ class _GpaDrawerState extends State<GpaDrawer> {
         color: Color(0xFF2a3036),
         child: Column(
           children: <Widget>[
-            SizedBox(
-              //ekranin 1/8'i kadar bosluk birak
-              height: MediaQuery.of(context).size.height / 25,
-            ),
             Container(
               padding: EdgeInsets.only(left: 10),
               height: 50,

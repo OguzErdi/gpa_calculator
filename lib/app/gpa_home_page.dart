@@ -59,7 +59,9 @@ class _GPAHomePageState extends State<GPAHomePage> {
       if (orientation == Orientation.portrait) {
         return Scaffold(
           resizeToAvoidBottomPadding: false,
-          drawer: GpaDrawer(UniqueKey()),
+          drawer: SafeArea(
+            child: GpaDrawer(UniqueKey()),
+          ),
           appBar: AppBar(
             iconTheme: new IconThemeData(color: Colors.white),
             centerTitle: true,
