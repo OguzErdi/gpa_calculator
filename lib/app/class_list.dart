@@ -63,11 +63,10 @@ class _ClassListState extends State<ClassList> {
         // ),
         key: UniqueKey(),
         onDismissed: (direction) {
-          if(direction == DismissDirection.startToEnd){
+          if (direction == DismissDirection.startToEnd) {
             debugPrint("edit");
             _editClassEvent(item, index);
-          }
-          else{
+          } else {
             debugPrint("remove");
             _removeClass(item, index);
           }
@@ -124,16 +123,45 @@ class DissBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: Container(
-        alignment: Alignment.centerRight,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.red,
-        ),
-        child: Container(
-          width: 80,
-          child: Icon(Icons.delete),
-        ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              alignment: Alignment.centerLeft,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  bottomLeft: Radius.circular(10),
+                ),
+                color: Theme.of(context).accentColor,
+              ),
+              child: Container(
+                width: 80,
+                child: Icon(
+                  Icons.edit,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+                color: Colors.red,
+              ),
+              child: Container(
+                width: 80,
+                child: Icon(Icons.delete),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
