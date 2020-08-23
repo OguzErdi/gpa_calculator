@@ -5,12 +5,14 @@ class ClassList extends StatefulWidget {
   List<MyClass> _classList;
   var _refreshGPA;
   var _saveClassList;
+  var _copyClassToForm;
 
   ClassList(
     Key key,
     this._classList,
     this._refreshGPA,
     this._saveClassList,
+    this._copyClassToForm,
   ) : super(key: key);
 
   @override
@@ -61,20 +63,14 @@ class _ClassListState extends State<ClassList> {
         // ),
         key: UniqueKey(),
         onDismissed: (direction) {
-          // Remove the item from the data source.
-          setState(() {
-            debugPrint("silindi.");
-            widget._classList.removeAt(index);
-            widget._saveClassList();
-            widget._refreshGPA();
-          });
-
-          // Show a snackbar. This snackbar could also contain "Undo" actions.
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text("${item.name} Dersi silindi."),
-            ),
-          );
+          if(direction == DismissDirection.startToEnd){
+            debugPrint("edit");
+            _editClassEvent(item, index);
+          }
+          else{
+            debugPrint("remove");
+            _removeClass(item, index);
+          }
         },
         child: Container(
           decoration: BoxDecoration(
@@ -95,6 +91,28 @@ class _ClassListState extends State<ClassList> {
         ),
       ),
     );
+  }
+
+  _removeClass(item, index) {
+    // Remove the item from the data source.
+    setState(() {
+      debugPrint("silindi.");
+      widget._classList.removeAt(index);
+      widget._saveClassList();
+      widget._refreshGPA();
+    });
+
+    // Show a snackbar. This snackbar could also contain "Undo" actions.
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text("${item.name} Dersi silindi."),
+      ),
+    );
+  }
+
+  _editClassEvent(MyClass item, index) {
+    widget._copyClassToForm(item, index);
+    _removeClass(item, index);
   }
 }
 

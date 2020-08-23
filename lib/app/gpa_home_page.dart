@@ -124,7 +124,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
         children: <Widget>[
           _buildClassForm(context),
           GPAHeader(gpa: gpa),
-          ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList),
+          ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList, _copyClassToForm),
         ],
       ),
     );
@@ -144,7 +144,7 @@ class _GPAHomePageState extends State<GPAHomePage> {
             child: Column(
               children: <Widget>[
                 GPAHeader(gpa: gpa),
-                ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList),
+                ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList, _copyClassToForm),
               ],
             ),
             flex: 1,
@@ -380,6 +380,14 @@ class _GPAHomePageState extends State<GPAHomePage> {
 
     _removeClassList();
     _getDefaultSelectedValues();
+  }
+
+  _copyClassToForm(MyClass item, index){
+    setState(() {
+      _controller.text = item.name;
+      _selectedCredit = item.credit;
+      _selectedScoreStr = item.scoreStr;
+    });
   }
 
 }
