@@ -68,7 +68,7 @@ class _ClassListState extends State<ClassList> {
             _editClassEvent(item, index);
           } else {
             debugPrint("remove");
-            _removeClass(item, index);
+            _removeClassEvent(item, index);
           }
         },
         child: Container(
@@ -92,14 +92,9 @@ class _ClassListState extends State<ClassList> {
     );
   }
 
-  _removeClass(item, index) {
+  _removeClassEvent(item, index) {
     // Remove the item from the data source.
-    setState(() {
-      debugPrint("silindi.");
-      widget._classList.removeAt(index);
-      widget._saveClassList();
-      widget._refreshGPA();
-    });
+    _removeClass(index);
 
     // Show a snackbar. This snackbar could also contain "Undo" actions.
     Scaffold.of(context).showSnackBar(
@@ -109,9 +104,24 @@ class _ClassListState extends State<ClassList> {
     );
   }
 
+  void _removeClass(index) {
+    setState(() {
+      debugPrint("silindi.");
+      widget._classList.removeAt(index);
+      widget._saveClassList();
+      widget._refreshGPA();
+    });
+  }
+
   _editClassEvent(MyClass item, index) {
     widget._copyClassToForm(item, index);
-    _removeClass(item, index);
+    _removeClass(index);
+    // Show a snackbar. This snackbar could also contain "Undo" actions.
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text("${item.name} Dersi düzenlenmek için silindi. Düzenleyip tekrar ekleyebilirsiniz."),
+      ),
+    );
   }
 }
 
