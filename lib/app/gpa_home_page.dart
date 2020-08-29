@@ -60,61 +60,36 @@ class _GPAHomePageState extends State<GPAHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return OrientationBuilder(builder: (context, orientation) {
-      if (orientation == Orientation.portrait) {
-        return Scaffold(
-          resizeToAvoidBottomPadding: false,
-          drawer: SafeArea(
-            child: GpaDrawer(UniqueKey(), _removeClassList, _changeGradeType),
-          ),
-          appBar: AppBar(
-            iconTheme: new IconThemeData(color: Colors.white),
-            centerTitle: true,
-            title: Text(
-              "GPA Calculator",
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-          ),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(
-              Icons.plus_one,
-              size: 48,
-              color: Theme.of(context).scaffoldBackgroundColor,
-            ),
-            elevation: 1.0,
-            onPressed: _addToClassList,
-          ),
-          body: _bodyPortraitMode(context, gpa, _classList),
-        );
-      } else {
-        return Scaffold(
-          resizeToAvoidBottomPadding: false,
-          drawer: GpaDrawer(UniqueKey(), _removeClassList, _changeGradeType),
-          appBar: AppBar(
-            iconTheme: new IconThemeData(color: Colors.white),
-            centerTitle: true,
-            title: Text(
-              "GPA Calculator",
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-          ),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(
-              Icons.plus_one,
-              size: 48,
-              color: Theme.of(context).scaffoldBackgroundColor,
-            ),
-            elevation: 1.0,
-            onPressed: _addToClassList,
-          ),
-          body: _bodyLandscapeMode(context, gpa, _classList),
-        );
-      }
-    });
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      drawer: GpaDrawer(UniqueKey(), _removeClassList, _changeGradeType),
+      appBar: AppBar(
+        iconTheme: new IconThemeData(color: Colors.white),
+        centerTitle: true,
+        title: Text(
+          "GPA Calculator",
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.plus_one,
+          size: 48,
+          color: Theme.of(context).scaffoldBackgroundColor,
+        ),
+        elevation: 1.0,
+        onPressed: _addToClassList,
+      ),
+      body: OrientationBuilder(builder: (context, oriantation) {
+        if (oriantation == Orientation.landscape) {
+          return _bodyLandscapeMode(context, gpa, _classList);
+        } else {
+          return _bodyPortraitMode(context, gpa, _classList);
+        }
+      }),
+    );
   }
 
   Widget _bodyPortraitMode(
@@ -124,7 +99,8 @@ class _GPAHomePageState extends State<GPAHomePage> {
         children: <Widget>[
           _buildClassForm(context),
           GPAHeader(gpa: gpa),
-          ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList, _copyClassToForm),
+          ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList,
+              _copyClassToForm),
         ],
       ),
     );
@@ -144,7 +120,8 @@ class _GPAHomePageState extends State<GPAHomePage> {
             child: Column(
               children: <Widget>[
                 GPAHeader(gpa: gpa),
-                ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList, _copyClassToForm),
+                ClassList(UniqueKey(), _classList, _refreshGPA, _saveClassList,
+                    _copyClassToForm),
               ],
             ),
             flex: 1,
@@ -371,10 +348,9 @@ class _GPAHomePageState extends State<GPAHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var gradeTypeStr = prefs.getString(GpaDrawer.keySelectedGradeType);
 
-    if(gradeTypeStr == "A+"){
+    if (gradeTypeStr == "A+") {
       _gradeList = APlusGradeType();
-    }
-    else{
+    } else {
       _gradeList = AAGradeType();
     }
 
@@ -382,14 +358,13 @@ class _GPAHomePageState extends State<GPAHomePage> {
     _getDefaultSelectedValues();
   }
 
-  _copyClassToForm(MyClass item, index){
+  _copyClassToForm(MyClass item, index) {
     setState(() {
       _controller.text = item.name;
       _selectedCredit = item.credit;
       _selectedScoreStr = item.scoreStr;
     });
   }
-
 }
 
 class GPAHeader extends StatelessWidget {
