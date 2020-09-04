@@ -7,7 +7,6 @@ class APlusGradeType implements GradeTypeList {
 
   factory APlusGradeType() {
     _singleton.list = {
-      "A+": 4.00,
       "A": 4.00,
       "A-": 3.70,
       "B+": 3.30,
