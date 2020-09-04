@@ -12,7 +12,7 @@ class AAGradeType implements GradeTypeList {
       "BB": 3.0,
       "CB": 2.5,
       "CC": 2.0,
-      "CD": 1.5,
+      "DC": 1.5,
       "DD": 1.0,
       "FF": 0.0,
       "NA": 0.0,
